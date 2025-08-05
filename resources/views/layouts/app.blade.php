@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Catalyst Dashboard')</title>
+    <title>@yield('title', 'Dashboard')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.3/dist/cdn.min.js"></script>
     <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('modal', {
+                open: false
+            });
+        });
+        
         tailwind.config = {
             theme: {
                 extend: {
@@ -35,6 +42,40 @@
         }
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
+        }
+        
+        /* Alpine.js transitions */
+        [x-cloak] { 
+            display: none !important; 
+        }
+        
+        .modal-transition {
+            transition-property: opacity, transform;
+            transition-duration: 300ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .modal-enter-start, .modal-leave-end {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        
+        .modal-enter-end, .modal-leave-start {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .backdrop-transition {
+            transition-property: opacity;
+            transition-duration: 200ms;
+        }
+        
+        .backdrop-enter-start, .backdrop-leave-end {
+            opacity: 0;
+        }
+        
+        .backdrop-enter-end, .backdrop-leave-start {
+            opacity: 1;
         }
     </style>
 </head>
@@ -124,6 +165,99 @@
                 document.getElementById('profile-dropdown')?.classList.add('hidden');
             }
         });
+    </script>
+
+    {{-- SweetAlert2 library --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- Script untuk menampilkan notifikasi sukses --}}
+    @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        });
+    </script>
+    @endif
+
+    {{-- Script untuk menampilkan notifikasi error --}}
+    @if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        });
+    </script>
+    @endif
+
+    {{-- Script untuk menampilkan error validasi --}}
+    @if($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let errorMessages = '';
+            @foreach($errors->all() as $error)
+                errorMessages += '{{ $error }}\n';
+            @endforeach
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Validasi Gagal',
+                text: errorMessages,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        });
+    </script>
+    @endif
+
+    {{-- Utility function untuk konfirmasi SweetAlert --}}
+    <script>
+        function confirmDelete(formElement, itemName = 'item') {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Hapus Item?',
+                text: `Anda yakin ingin menghapus ${itemName}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then(res => {
+                if (res.isConfirmed) formElement.submit();
+            });
+        }
     </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+        Route::resource('users', UserController::class);
         // Tambahkan resource lain untuk admin jika diperlukan
     });
 
@@ -45,6 +47,8 @@ Route::middleware(['auth', 'role:user'])
     ->name('user.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'userDashboard'])->name('dashboard');
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
         // Tambahkan resource lain untuk user jika diperlukan
     });
 

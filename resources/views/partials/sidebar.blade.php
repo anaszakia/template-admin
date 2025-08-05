@@ -31,55 +31,88 @@
     <!-- Navigation -->
     <nav class="flex-1 px-4 py-6 overflow-y-auto scrollbar-hide">
         <ul class="space-y-2">
+            <!-- Dashboard - Menu untuk semua role -->
             <li>
-                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">
+                <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('user.dashboard') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-medium text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">
                     <i class="fas fa-home w-5 h-5 mr-3 text-gray-500"></i>
-                    <span class="sidebar-text">Home</span>
+                    <span class="sidebar-text">Dashboard</span>
                 </a>
             </li>
             
-            <li>
-                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-calendar-alt w-5 h-5 mr-3 text-gray-500"></i>
-                    <span class="sidebar-text">Events</span>
-                </a>
-            </li>
-            
-            <li>
-                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-shopping-cart w-5 h-5 mr-3 text-gray-500"></i>
-                    <span class="sidebar-text">Orders</span>
-                </a>
-            </li>
-            
-            <!-- Dropdown Menu -->
-            <li class="relative">
-                <button onclick="toggleDropdown()" class="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div class="flex items-center">
-                        <i class="fas fa-layer-group w-5 h-5 mr-3 text-gray-500"></i>
-                        <span class="sidebar-text">Management</span>
+            <!-- Menu khusus Admin -->
+            @if(auth()->user()->role === 'admin')
+                <!-- Dropdown Menu Management -->
+                <li class="relative">
+                    <button onclick="toggleDropdown()" class="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-layer-group w-5 h-5 mr-3 text-gray-500"></i>
+                            <span class="sidebar-text">Management</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200 sidebar-arrow" id="dropdown-arrow"></i>
+                    </button>
+                    
+                    <!-- Dropdown Content -->
+                    <div id="dropdown-content" class="hidden mt-2 ml-8 space-y-1 dropdown-content">
+                        <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-users w-4 h-4 mr-2"></i>
+                            Users
+                        </a>
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-user-tag w-4 h-4 mr-2"></i>
+                            Roles
+                        </a>
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-key w-4 h-4 mr-2"></i>
+                            Permissions
+                        </a>
                     </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200 sidebar-arrow" id="dropdown-arrow"></i>
-                </button>
+                </li>
                 
-                <!-- Dropdown Content -->
-                <div id="dropdown-content" class="hidden mt-2 ml-8 space-y-1 dropdown-content">
-                    <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                        Users
+                <li>
+                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-chart-bar w-5 h-5 mr-3 text-gray-500"></i>
+                        <span class="sidebar-text">Reports</span>
                     </a>
-                    <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                        Roles
+                </li>
+                
+                <li>
+                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500"></i>
+                        <span class="sidebar-text">Settings</span>
                     </a>
-                    <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                        Permissions
-                    </a>
-                </div>
-            </li>
+                </li>
+            @endif
             
+            <!-- Menu khusus User -->
+            @if(auth()->user()->role === 'user')
+                <li>
+                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-user w-5 h-5 mr-3 text-gray-500"></i>
+                        <span class="sidebar-text">Profil Saya</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{{ route('user.users.index') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-users w-5 h-5 mr-3 text-gray-500"></i>
+                        <span class="sidebar-text">Lihat User</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-bell w-5 h-5 mr-3 text-gray-500"></i>
+                        <span class="sidebar-text">Notifikasi</span>
+                    </a>
+                </li>
+            @endif
+            
+            <!-- Menu untuk semua role -->
             <li>
                 <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500"></i>
-                    <span class="sidebar-text">Settings</span>
+                    <i class="fas fa-question-circle w-5 h-5 mr-3 text-gray-500"></i>
+                    <span class="sidebar-text">Help</span>
                 </a>
             </li>
         </ul>
