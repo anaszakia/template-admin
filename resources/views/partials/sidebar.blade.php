@@ -89,13 +89,19 @@
     <div class="border-t border-gray-200 p-4">
         <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors" onclick="toggleUserDropdown()">
             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" 
-                     alt="User Avatar" 
-                     class="w-full h-full rounded-full object-cover">
+                @php
+                    $initial = auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : '?';
+                    $colors = ['bg-blue-500', 'bg-purple-500', 'bg-pink-500', 'bg-red-500'];
+                    $color = $colors[ord($initial) % count($colors)];
+                @endphp
+
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold {{ $color }}">
+                    {{ $initial }}
+                </div> 
             </div>
             <div class="flex-1 min-w-0 sidebar-text">
-                <p class="text-sm font-medium text-gray-900 truncate">Erica</p>
-                <p class="text-xs text-gray-500 truncate">erica@example.com</p>
+                <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
+                <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
             </div>
             <i class="fas fa-chevron-up text-xs text-gray-400 transition-transform duration-200 sidebar-arrow" id="user-dropdown-arrow"></i>
         </div>
@@ -106,15 +112,17 @@
                 <i class="fas fa-user w-4 h-4 mr-3 text-gray-500"></i>
                 <span class="sidebar-text">Profile</span>
             </a>
-            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                <i class="fas fa-cog w-4 h-4 mr-3 text-gray-500"></i>
-                <span class="sidebar-text">Account Settings</span>
-            </a>
-            <hr class="my-1">
-            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+            <!-- Tombol/logout link -->
+            <a href="#"
+            id="btn-logout"
+            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                 <i class="fas fa-sign-out-alt w-4 h-4 mr-3 text-gray-500"></i>
-                <span class="sidebar-text">Sign Out</span>
+                <span class="sidebar-text">Keluar</span>
             </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                @csrf
+            </form>
         </div>
     </div>
 </div>
@@ -233,4 +241,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize desktop toggle button position
     desktopToggle.style.left = '16rem';
 });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('btn-logout').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        Swal.fire({
+            title: 'Konfirmasi Logout',
+            text: 'Apakah Anda yakin ingin keluar dari sistem?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Keluar',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('logout-form').submit();
+            }
+        });
+    });
 </script>
