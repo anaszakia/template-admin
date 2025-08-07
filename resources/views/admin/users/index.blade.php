@@ -162,7 +162,7 @@
                         </td>
                     </tr>
 
-                    {{-- ============= MODAL DETAIL (per user) ============= --}}
+                  {{-- MODAL DETAIL (per user) --}}
                     <div
                         x-show="detailModals[{{ $user->id }}]"
                         x-cloak
@@ -511,6 +511,4 @@
     @endif
     {{-- ===================== END MODAL CREATE ========================= --}}
 </div>
-
-{{-- Semua script notifikasi dan SweetAlert telah dipindahkan ke app.blade.php --}}
 @endsection

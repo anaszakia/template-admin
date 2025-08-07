@@ -66,6 +66,10 @@
                             <i class="fas fa-key w-4 h-4 mr-2"></i>
                             Permissions
                         </a>
+                        <a href="{{ route('admin.audit.index') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-clipboard-list w-4 h-4 mr-2"></i>
+                            Audit Log
+                        </a>
                     </div>
                 </li>
                 

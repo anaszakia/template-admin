@@ -11,8 +11,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Global middleware
+        $middleware->append([
+            \App\Http\Middleware\SecurityHeaders::class,
+        ]);
+        
+        // Middleware aliases
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
+            'log.sensitive' => \App\Http\Middleware\LogSensitiveActions::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

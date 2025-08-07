@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AuditLogController;
 
 
 // hanya bisa diakses tamu (belum login)
@@ -32,12 +33,18 @@ Route::post('/logout', [LoginController::class, 'logout'])
 
 
 // auth admin
-Route::middleware(['auth', 'role:admin'])
+Route::middleware(['auth', 'role:admin', 'log.sensitive'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
         Route::resource('users', UserController::class);
+        
+        // Audit Log routes
+        Route::get('/audit', [AuditLogController::class, 'index'])->name('audit.index');
+        Route::get('/audit/{auditLog}', [AuditLogController::class, 'show'])->name('audit.show');
+        Route::post('/audit/export', [AuditLogController::class, 'export'])->name('audit.export');
+        
         // Tambahkan resource lain untuk admin jika diperlukan
     });
 
