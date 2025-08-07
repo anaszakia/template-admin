@@ -1,41 +1,46 @@
 <!-- Toggle Button for Mobile -->
-<button id="sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md">
-    <i class="fas fa-bars"></i>
+<button id="sidebar-toggle" class="lg:hidden fixed top-20 left-4 z-50 p-2 bg-white text-gray-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+    <i class="fas fa-bars text-sm"></i>
+</button>
+
+<!-- Desktop Toggle Button (when sidebar collapsed) -->
+<button id="desktop-show-toggle" class="hidden fixed top-4 left-4 z-40 p-2 bg-white text-gray-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+    <i class="fas fa-bars text-sm"></i>
 </button>
 
 <!-- Sidebar Overlay for Mobile -->
-<div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden hidden"></div>
+<div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-30 z-20 lg:hidden hidden transition-all duration-300"></div>
 
 <!-- Sidebar -->
-<div id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform -translate-x-full transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col">
-    <!-- Sidebar Header with Toggle and Close Button -->
+<div id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform -translate-x-full transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col border-r border-gray-200">
+    <!-- Sidebar Header -->
     <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-        <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
-                <i class="fas fa-flask text-white text-sm"></i>
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-layer-group text-white text-sm"></i>
             </div>
-            <span class="text-xl font-semibold text-gray-900 sidebar-text">Logo</span>
+            <span class="text-lg font-semibold text-gray-800 sidebar-text">Admin Panel</span>
         </div>
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-1">
             <!-- Desktop Toggle Button -->
-            <button id="desktop-toggle" class="hidden lg:block p-1 text-gray-500 hover:text-gray-700 transition-colors">
-                <i class="fas fa-bars"></i>
+            <button id="desktop-toggle" class="hidden lg:block p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200">
+                <i class="fas fa-chevron-left text-sm transition-transform duration-200" id="toggle-icon"></i>
             </button>
             <!-- Mobile Close Button -->
-            <button id="sidebar-close" class="lg:hidden p-1 text-gray-500 hover:text-gray-700">
-                <i class="fas fa-times"></i>
+            <button id="sidebar-close" class="lg:hidden p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200">
+                <i class="fas fa-times text-sm"></i>
             </button>
         </div>
     </div>
     
     <!-- Navigation -->
-    <nav class="flex-1 px-4 py-6 overflow-y-auto scrollbar-hide">
+    <nav class="flex-1 px-4 py-4 overflow-y-auto">
         <ul class="space-y-2">
             <!-- Dashboard - Menu untuk semua role -->
             <li>
                 <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('user.dashboard') }}" 
-                   class="flex items-center px-3 py-2 text-sm font-medium text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-home w-5 h-5 mr-3 text-gray-500"></i>
+                   class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
+                    <i class="fas fa-home w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                     <span class="sidebar-text">Dashboard</span>
                 </a>
             </li>
@@ -44,45 +49,45 @@
             @if(auth()->user()->role === 'admin')
                 <!-- Dropdown Menu Management -->
                 <li class="relative">
-                    <button onclick="toggleDropdown()" class="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                    <button onclick="toggleDropdown()" class="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
                         <div class="flex items-center">
-                            <i class="fas fa-layer-group w-5 h-5 mr-3 text-gray-500"></i>
+                            <i class="fas fa-users-cog w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                             <span class="sidebar-text">Management</span>
                         </div>
-                        <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200 sidebar-arrow" id="dropdown-arrow"></i>
+                        <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-blue-500 transition-all duration-200 sidebar-arrow" id="dropdown-arrow"></i>
                     </button>
                     
                     <!-- Dropdown Content -->
-                    <div id="dropdown-content" class="hidden mt-2 ml-8 space-y-1 dropdown-content">
-                        <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                            <i class="fas fa-users w-4 h-4 mr-2"></i>
+                    <div id="dropdown-content" class="hidden mt-1 ml-8 space-y-1 dropdown-content">
+                        <a href="{{ route('admin.users.index') }}" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
+                            <i class="fas fa-users w-4 h-4 mr-3"></i>
                             Users
                         </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                            <i class="fas fa-user-tag w-4 h-4 mr-2"></i>
+                        <a href="#" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
+                            <i class="fas fa-user-shield w-4 h-4 mr-3"></i>
                             Roles
                         </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                            <i class="fas fa-key w-4 h-4 mr-2"></i>
+                        <a href="#" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
+                            <i class="fas fa-key w-4 h-4 mr-3"></i>
                             Permissions
                         </a>
-                        <a href="{{ route('admin.audit.index') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                            <i class="fas fa-clipboard-list w-4 h-4 mr-2"></i>
+                        <a href="{{ route('admin.audit.index') }}" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
+                            <i class="fas fa-clipboard-check w-4 h-4 mr-3"></i>
                             Audit Log
                         </a>
                     </div>
                 </li>
                 
                 <li>
-                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-chart-bar w-5 h-5 mr-3 text-gray-500"></i>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
+                        <i class="fas fa-chart-line w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                         <span class="sidebar-text">Reports</span>
                     </a>
                 </li>
                 
                 <li>
-                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500"></i>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
+                        <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                         <span class="sidebar-text">Settings</span>
                     </a>
                 </li>
@@ -91,22 +96,22 @@
             <!-- Menu khusus User -->
             @if(auth()->user()->role === 'user')
                 <li>
-                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-user w-5 h-5 mr-3 text-gray-500"></i>
+                    <a href="{{ route('profile.edit') }}" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
+                        <i class="fas fa-user-edit w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                         <span class="sidebar-text">Profil Saya</span>
                     </a>
                 </li>
                 
                 <li>
-                    <a href="{{ route('user.users.index') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-users w-5 h-5 mr-3 text-gray-500"></i>
+                    <a href="{{ route('user.users.index') }}" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
+                        <i class="fas fa-users w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                         <span class="sidebar-text">Lihat User</span>
                     </a>
                 </li>
                 
                 <li>
-                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-bell w-5 h-5 mr-3 text-gray-500"></i>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
+                        <i class="fas fa-bell w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                         <span class="sidebar-text">Notifikasi</span>
                     </a>
                 </li>
@@ -114,8 +119,8 @@
             
             <!-- Menu untuk semua role -->
             <li>
-                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-question-circle w-5 h-5 mr-3 text-gray-500"></i>
+                <a href="#" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group">
+                    <i class="fas fa-question-circle w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"></i>
                     <span class="sidebar-text">Help</span>
                 </a>
             </li>
@@ -124,35 +129,35 @@
     
     <!-- User Profile Section -->
     <div class="border-t border-gray-200 p-4">
-        <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors" onclick="toggleUserDropdown()">
-            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+        <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-all duration-200" onclick="toggleUserDropdown()">
+            <div class="relative">
                 @php
                     $initial = auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : '?';
-                    $colors = ['bg-blue-500', 'bg-purple-500', 'bg-pink-500', 'bg-red-500'];
+                    $colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500'];
                     $color = $colors[ord($initial) % count($colors)];
                 @endphp
-
-                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold {{ $color }}">
+                <div class="w-10 h-10 {{ $color }} rounded-lg flex items-center justify-center text-white font-semibold shadow-sm">
                     {{ $initial }}
                 </div> 
+                <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
             </div>
             <div class="flex-1 min-w-0 sidebar-text">
-                <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
-                <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
+                <p class="text-sm font-medium text-gray-900 truncate">{{ auth()->user()->name }}</p>
+                <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
             </div>
-            <i class="fas fa-chevron-up text-xs text-gray-400 transition-transform duration-200 sidebar-arrow" id="user-dropdown-arrow"></i>
+            <i class="fas fa-chevron-up text-xs text-gray-400 transition-all duration-200 sidebar-arrow" id="user-dropdown-arrow"></i>
         </div>
         
         <!-- User Dropdown Menu -->
-        <div id="user-dropdown-content" class="hidden mt-2 py-2 bg-white border border-gray-200 rounded-lg shadow-lg">
-            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                <i class="fas fa-user w-4 h-4 mr-3 text-gray-500"></i>
-                <span class="sidebar-text">Profile</span>
+        <div id="user-dropdown-content" class="hidden mt-2 py-1 bg-white border border-gray-200 rounded-lg shadow-md">
+            <a href="{{ route('profile.edit') }}" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200">
+                <i class="fas fa-user-edit w-4 h-4 mr-3 text-gray-500"></i>
+                <span class="sidebar-text">Edit Profile</span>
             </a>
             <!-- Tombol/logout link -->
             <a href="#"
             id="btn-logout"
-            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+            class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200">
                 <i class="fas fa-sign-out-alt w-4 h-4 mr-3 text-gray-500"></i>
                 <span class="sidebar-text">Keluar</span>
             </a>
@@ -165,13 +170,6 @@
 </div>
 
 <style>
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
 .sidebar-collapsed {
     width: 4rem !important;
 }
@@ -220,24 +218,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarClose = document.getElementById('sidebar-close');
     const sidebarOverlay = document.getElementById('sidebar-overlay');
     const desktopToggle = document.getElementById('desktop-toggle');
+    const desktopShowToggle = document.getElementById('desktop-show-toggle');
+    const toggleIcon = document.getElementById('toggle-icon');
     
     // Mobile toggle sidebar
-    sidebarToggle.addEventListener('click', function() {
+    sidebarToggle?.addEventListener('click', function(e) {
+        e.stopPropagation();
         sidebar.classList.remove('-translate-x-full');
         sidebarOverlay.classList.remove('hidden');
     });
     
-    // Desktop toggle sidebar (collapse/expand)
-    desktopToggle.addEventListener('click', function() {
-        sidebar.classList.toggle('sidebar-collapsed');
+    // Desktop toggle sidebar (collapse)
+    desktopToggle?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        sidebar.classList.add('sidebar-collapsed');
+        desktopShowToggle.classList.remove('hidden');
+        desktopShowToggle.classList.add('lg:block');
         
         // Close any open dropdowns when collapsing
-        if (sidebar.classList.contains('sidebar-collapsed')) {
-            document.getElementById('dropdown-content').classList.add('hidden');
-            document.getElementById('user-dropdown-content').classList.add('hidden');
-            document.getElementById('dropdown-arrow').classList.remove('rotate-180');
-            document.getElementById('user-dropdown-arrow').classList.remove('rotate-180');
-        }
+        document.getElementById('dropdown-content')?.classList.add('hidden');
+        document.getElementById('user-dropdown-content')?.classList.add('hidden');
+        document.getElementById('dropdown-arrow')?.classList.remove('rotate-180');
+        document.getElementById('user-dropdown-arrow')?.classList.remove('rotate-180');
+    });
+    
+    // Desktop show sidebar button
+    desktopShowToggle?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        sidebar.classList.remove('sidebar-collapsed');
+        desktopShowToggle.classList.add('hidden');
+        desktopShowToggle.classList.remove('lg:block');
     });
     
     // Close sidebar function for mobile
@@ -246,15 +256,19 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebarOverlay.classList.add('hidden');
     }
     
-    sidebarClose.addEventListener('click', closeSidebar);
-    sidebarOverlay.addEventListener('click', closeSidebar);
+    sidebarClose?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closeSidebar();
+    });
+    
+    sidebarOverlay?.addEventListener('click', closeSidebar);
     
     // Close sidebar when clicking outside on mobile
     document.addEventListener('click', function(event) {
         const isLargeScreen = window.innerWidth >= 1024;
         
         if (!isLargeScreen && !sidebar.contains(event.target) && 
-            event.target !== sidebarToggle && !sidebarToggle.contains(event.target)) {
+            event.target !== sidebarToggle && !sidebarToggle?.contains(event.target)) {
             closeSidebar();
         }
     });
@@ -264,19 +278,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const dropdown = document.getElementById('dropdown-content');
         const userDropdown = document.getElementById('user-dropdown-content');
         
-        if (!event.target.closest('.relative') && !dropdown.classList.contains('hidden')) {
+        if (!event.target.closest('.relative') && dropdown && !dropdown.classList.contains('hidden')) {
             dropdown.classList.add('hidden');
-            document.getElementById('dropdown-arrow').classList.remove('rotate-180');
+            document.getElementById('dropdown-arrow')?.classList.remove('rotate-180');
         }
         
-        if (!event.target.closest('.border-t') && !userDropdown.classList.contains('hidden')) {
+        if (!event.target.closest('.border-t') && userDropdown && !userDropdown.classList.contains('hidden')) {
             userDropdown.classList.add('hidden');
-            document.getElementById('user-dropdown-arrow').classList.remove('rotate-180');
+            document.getElementById('user-dropdown-arrow')?.classList.remove('rotate-180');
         }
     });
     
-    // Initialize desktop toggle button position
-    desktopToggle.style.left = '16rem';
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+            // Desktop mode
+            sidebarOverlay.classList.add('hidden');
+        } else {
+            // Mobile mode - reset collapsed state
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                sidebar.classList.remove('sidebar-collapsed');
+                desktopShowToggle.classList.add('hidden');
+                desktopShowToggle.classList.remove('lg:block');
+            }
+        }
+    });
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
+use App\Exports\AuditLogExport;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AuditLogController extends Controller
 {
@@ -58,7 +60,12 @@ class AuditLogController extends Controller
     
     public function export(Request $request)
     {
-        // Export ke CSV/Excel bisa ditambahkan nanti
-        return response()->json(['message' => 'Export feature coming soon']);
+        try {
+            $filename = 'audit_log_' . date('Y-m-d_H-i-s') . '.xlsx';
+            
+            return Excel::download(new AuditLogExport($request), $filename);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengexport data: ' . $e->getMessage());
+        }
     }
 }

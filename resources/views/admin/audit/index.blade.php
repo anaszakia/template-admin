@@ -4,6 +4,19 @@
 
 @section('content')
 <div class="space-y-6">
+    {{-- Success/Error Messages --}}
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ session('success') }}</span>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ session('error') }}</span>
+    </div>
+    @endif
+
     {{-- Header --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -17,9 +30,15 @@
                     <i class="fas fa-filter mr-2"></i>Filter
                 </button>
                 
-                <button onclick="exportData()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium">
-                    <i class="fas fa-download mr-2"></i>Export
+                <button onclick="exportData()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium">
+                    <i class="fas fa-file-excel mr-2"></i>Export Excel
                 </button>
+                
+                @if(request()->hasAny(['date_from', 'date_to', 'action', 'user_id', 'search']))
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <i class="fas fa-filter mr-1"></i>Filter Aktif
+                </span>
+                @endif
             </div>
         </div>
         
@@ -183,8 +202,64 @@ function toggleFilters() {
 }
 
 function exportData() {
-    // Implementasi export bisa ditambahkan nanti
-    alert('Export feature coming soon!');
+    // Show loading state
+    const exportBtn = event.target;
+    const originalText = exportBtn.innerHTML;
+    exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Exporting...';
+    exportBtn.disabled = true;
+    
+    // Ambil parameter filter dari form
+    const form = document.querySelector('#filterForm form');
+    const formData = new FormData(form);
+    
+    // Buat URL dengan parameter
+    const params = new URLSearchParams();
+    for (let [key, value] of formData.entries()) {
+        if (value) {
+            params.append(key, value);
+        }
+    }
+    
+    // Tambahkan parameter dari URL saat ini juga
+    const currentParams = new URLSearchParams(window.location.search);
+    for (let [key, value] of currentParams.entries()) {
+        if (value && !params.has(key)) {
+            params.append(key, value);
+        }
+    }
+    
+    // Buat form untuk POST request
+    const exportForm = document.createElement('form');
+    exportForm.method = 'POST';
+    exportForm.action = '{{ route('admin.audit.export') }}';
+    exportForm.style.display = 'none';
+    
+    // Tambahkan CSRF token
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_token';
+    csrfInput.value = '{{ csrf_token() }}';
+    exportForm.appendChild(csrfInput);
+    
+    // Tambahkan semua parameter sebagai hidden input
+    for (let [key, value] of params.entries()) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        exportForm.appendChild(input);
+    }
+    
+    // Submit form
+    document.body.appendChild(exportForm);
+    exportForm.submit();
+    document.body.removeChild(exportForm);
+    
+    // Reset button state after a short delay
+    setTimeout(() => {
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+    }, 3000);
 }
 </script>
 @endsection
