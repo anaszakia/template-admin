@@ -172,7 +172,7 @@
                         x-transition:leave="backdrop-transition"
                         x-transition:leave-start="backdrop-leave-start"
                         x-transition:leave-end="backdrop-leave-end"
-                        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
                         <div @click.away="closeDetail({{ $user->id }})"
                              x-transition:enter="modal-transition"
                              x-transition:enter-start="modal-enter-start"
@@ -180,7 +180,7 @@
                              x-transition:leave="modal-transition"
                              x-transition:leave-start="modal-leave-start"
                              x-transition:leave-end="modal-leave-end"
-                             class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+                             class="bg-white rounded-xl shadow-xl w-full max-w-lg my-8 mx-auto modal-container">
                             
                             {{-- Header --}}
                             <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
@@ -196,7 +196,7 @@
                             </div>
 
                             {{-- Body --}}
-                            <div class="px-6 py-6">
+                            <div class="px-6 py-6 max-h-[70vh] overflow-y-auto modal-scroll modal-body">
                                 <div class="space-y-6">
                                     {{-- Avatar dan Nama --}}
                                     <div class="text-center">
@@ -304,7 +304,7 @@
                         x-transition:leave="backdrop-transition"
                         x-transition:leave-start="backdrop-leave-start"
                         x-transition:leave-end="backdrop-leave-end"
-                        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
                         <div @click.away="closeEdit({{ $user->id }})"
                              x-transition:enter="modal-transition"
                              x-transition:enter-start="modal-enter-start"
@@ -312,7 +312,7 @@
                              x-transition:leave="modal-transition"
                              x-transition:leave-start="modal-leave-start"
                              x-transition:leave-end="modal-leave-end"
-                             class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+                             class="bg-white rounded-xl shadow-xl w-full max-w-lg my-8 mx-auto modal-container">
                             
                             {{-- Header --}}
                             <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
@@ -328,7 +328,7 @@
                             </div>
 
                             {{-- Body --}}
-                            <div class="px-6 py-4 max-h-[70vh] overflow-y-auto">
+                            <div class="px-6 py-4 max-h-[70vh] overflow-y-auto modal-scroll modal-body">
                                 <form method="POST"
                                       action="{{ route('admin.users.update', $user) }}"
                                       class="space-y-4">
@@ -429,7 +429,7 @@
         x-transition:leave="backdrop-transition"
         x-transition:leave-start="backdrop-leave-start"
         x-transition:leave-end="backdrop-leave-end"
-        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
         <div @click.away="openCreate=false"
              x-transition:enter="modal-transition"
              x-transition:enter-start="modal-enter-start"
@@ -437,7 +437,7 @@
              x-transition:leave="modal-transition"
              x-transition:leave-start="modal-leave-start"
              x-transition:leave-end="modal-leave-end"
-             class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+             class="bg-white rounded-xl shadow-xl w-full max-w-lg my-8 mx-auto modal-container">
 
             {{-- Header --}}
             <div class="px-6 py-4 border-b border-gray-200">
@@ -446,7 +446,7 @@
             </div>
 
             {{-- Body --}}
-            <div class="px-6 py-4 max-h-[70vh] overflow-y-auto">
+            <div class="px-6 py-4 max-h-[70vh] overflow-y-auto modal-scroll modal-body">
                 <form method="POST" action="{{ route('admin.users.store') }}" id="userCreateForm" class="space-y-4">
                     @csrf
 
@@ -511,4 +511,57 @@
     @endif
     {{-- ===================== END MODAL CREATE ========================= --}}
 </div>
+
+{{-- Custom Scrollbar Styles --}}
+<style>
+/* Custom scrollbar for modal content */
+.modal-scroll {
+    scroll-behavior: smooth;
+}
+
+.modal-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Firefox */
+.modal-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* Responsive modal height */
+@media (max-height: 640px) {
+    .modal-body {
+        max-height: 60vh !important;
+    }
+}
+
+@media (max-height: 480px) {
+    .modal-body {
+        max-height: 50vh !important;
+    }
+}
+
+/* Ensure modal content doesn't get cut off on small screens */
+.modal-container {
+    max-height: calc(100vh - 2rem);
+    overflow: visible;
+}
+</style>
+
 @endsection
