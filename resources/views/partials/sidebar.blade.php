@@ -3,11 +3,6 @@
     <i class="fas fa-bars text-sm"></i>
 </button>
 
-<!-- Desktop Toggle Button (when sidebar collapsed) -->
-<button id="desktop-show-toggle" class="hidden fixed top-4 left-4 z-40 p-2 bg-white text-gray-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
-    <i class="fas fa-bars text-sm"></i>
-</button>
-
 <!-- Sidebar Overlay for Mobile -->
 <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-30 z-20 lg:hidden hidden transition-all duration-300"></div>
 
@@ -22,8 +17,8 @@
             <span class="text-lg font-semibold text-gray-800 sidebar-text">Admin Panel</span>
         </div>
         <div class="flex items-center space-x-1">
-            <!-- Desktop Toggle Button -->
-            <button id="desktop-toggle" class="hidden lg:block p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200">
+            <!-- Desktop Toggle Button - Langsung klik tanpa hover -->
+            <button id="desktop-toggle" class="hidden lg:flex p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200 items-center justify-center">
                 <i class="fas fa-chevron-left text-sm transition-transform duration-200" id="toggle-icon"></i>
             </button>
             <!-- Mobile Close Button -->
@@ -61,19 +56,19 @@
                     <div id="dropdown-content" class="hidden mt-1 ml-8 space-y-1 dropdown-content">
                         <a href="{{ route('admin.users.index') }}" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
                             <i class="fas fa-users w-4 h-4 mr-3"></i>
-                            Users
+                            <span class="sidebar-text">Users</span>
                         </a>
                         <a href="#" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
                             <i class="fas fa-user-shield w-4 h-4 mr-3"></i>
-                            Roles
+                            <span class="sidebar-text">Roles</span>
                         </a>
                         <a href="#" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
                             <i class="fas fa-key w-4 h-4 mr-3"></i>
-                            Permissions
+                            <span class="sidebar-text">Permissions</span>
                         </a>
                         <a href="{{ route('admin.audit.index') }}" class="flex items-center px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-all duration-200">
                             <i class="fas fa-clipboard-check w-4 h-4 mr-3"></i>
-                            Audit Log
+                            <span class="sidebar-text">Audit Log</span>
                         </a>
                     </div>
                 </li>
@@ -190,6 +185,11 @@
 <script>
 // Toggle dropdown function
 function toggleDropdown() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('sidebar-collapsed')) {
+        return; // Don't open dropdown when sidebar is collapsed
+    }
+    
     const dropdown = document.getElementById('dropdown-content');
     const arrow = document.getElementById('dropdown-arrow');
     
@@ -218,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarClose = document.getElementById('sidebar-close');
     const sidebarOverlay = document.getElementById('sidebar-overlay');
     const desktopToggle = document.getElementById('desktop-toggle');
-    const desktopShowToggle = document.getElementById('desktop-show-toggle');
     const toggleIcon = document.getElementById('toggle-icon');
     
     // Mobile toggle sidebar
@@ -228,26 +227,25 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebarOverlay.classList.remove('hidden');
     });
     
-    // Desktop toggle sidebar (collapse)
+    // Desktop toggle sidebar (collapse/expand) - LANGSUNG KLIK
     desktopToggle?.addEventListener('click', function(e) {
         e.stopPropagation();
-        sidebar.classList.add('sidebar-collapsed');
-        desktopShowToggle.classList.remove('hidden');
-        desktopShowToggle.classList.add('lg:block');
         
-        // Close any open dropdowns when collapsing
-        document.getElementById('dropdown-content')?.classList.add('hidden');
-        document.getElementById('user-dropdown-content')?.classList.add('hidden');
-        document.getElementById('dropdown-arrow')?.classList.remove('rotate-180');
-        document.getElementById('user-dropdown-arrow')?.classList.remove('rotate-180');
-    });
-    
-    // Desktop show sidebar button
-    desktopShowToggle?.addEventListener('click', function(e) {
-        e.stopPropagation();
-        sidebar.classList.remove('sidebar-collapsed');
-        desktopShowToggle.classList.add('hidden');
-        desktopShowToggle.classList.remove('lg:block');
+        if (sidebar.classList.contains('sidebar-collapsed')) {
+            // Expand sidebar
+            sidebar.classList.remove('sidebar-collapsed');
+            toggleIcon.classList.remove('rotate-180');
+        } else {
+            // Collapse sidebar
+            sidebar.classList.add('sidebar-collapsed');
+            toggleIcon.classList.add('rotate-180');
+            
+            // Close any open dropdowns when collapsing
+            document.getElementById('dropdown-content')?.classList.add('hidden');
+            document.getElementById('user-dropdown-content')?.classList.add('hidden');
+            document.getElementById('dropdown-arrow')?.classList.remove('rotate-180');
+            document.getElementById('user-dropdown-arrow')?.classList.remove('rotate-180');
+        }
     });
     
     // Close sidebar function for mobile
@@ -298,13 +296,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Mobile mode - reset collapsed state
             if (sidebar.classList.contains('sidebar-collapsed')) {
                 sidebar.classList.remove('sidebar-collapsed');
-                desktopShowToggle.classList.add('hidden');
-                desktopShowToggle.classList.remove('lg:block');
+                toggleIcon.classList.remove('rotate-180');
             }
         }
     });
 });
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.getElementById('btn-logout').addEventListener('click', function(e) {
